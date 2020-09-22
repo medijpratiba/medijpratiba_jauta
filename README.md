@@ -1,1 +1,3 @@
-# medijpratiba_jauta
+# Medijpratiba.lv jautājumi
+
+WordPress plugins
