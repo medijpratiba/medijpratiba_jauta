@@ -2,7 +2,7 @@
 
 /** 
  * Plugin Name: Medijpratiba.lv jautājumi
- * Version: 1.0.3
+ * Version: 1.0.4
  * Plugin URI: https://mediabox.lv/wordpress/
  * Description: Medijpratiba.lv spēles jautājumi
  * Author: Rolands Umbrovskis
@@ -137,18 +137,18 @@ class mpQuestions
                     'type' => 'range',
                     'id'   => $prefix . 'nrpk',
                     'name' => esc_html__('Nr', $this->plugin_td),
-                    'desc' => esc_html__('1 ... 25', $this->plugin_td),
+                    'desc' => esc_html__('1 ... 23', $this->plugin_td),
                     'std'  => 1,
                     'min'  => 1,
-                    'max'  => 25,
+                    'max'  => 23,
                     'step' => 1,
                 ],
                 [
                     'type' => 'number',
                     'id'   => $prefix . 'solis',
                     'name' => esc_html__('Solis', 'mpc-generator'),
-                    'desc' => esc_html__('-3 ... 3', 'mpc-generator'),
-                    'min'  => -3,
+                    'desc' => esc_html__('0 ... 3', 'mpc-generator'),
+                    'min'  => 0,
                     'max'  => 3,
                     'step' => 1,
                 ],
