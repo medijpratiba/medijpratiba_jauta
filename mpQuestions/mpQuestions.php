@@ -2,7 +2,7 @@
 
 /** 
  * Plugin Name: Medijpratiba.lv jautājumi
- * Version: 1.0.4
+ * Version: 1.0.5
  * Plugin URI: https://mediabox.lv/wordpress/
  * Description: Medijpratiba.lv spēles jautājumi
  * Author: Rolands Umbrovskis
@@ -30,29 +30,47 @@ try {
 class mpQuestions
 {
 
+    var $vers = '1.0.5';
+    var $verspatch;
     var $plugin_slug;
     var $label_singular;
     var $label_plural;
     var $plugin_td; // text domain
 
+    var $mpqdir;
     var $cb_name;
 
     function __construct()
     {
         $this->plugin_td = 'medijpratibalv';
         $this->plugin_slug = 'mpquestions';
+
+        $this->verspatch = date("yW");
+
         $this->label_plural = __('Questions', $this->plugin_td);
         $this->label_singular = __('Question', $this->plugin_td);
+
+        $this->mpqdir = plugin_dir_url(__FILE__);
+
         add_action('init', [&$this, 'mpquestionsPostTypes'], 15);
 
         add_filter('rwmb_meta_boxes',  [&$this, 'registerMb']);
         add_filter('single_template',  [&$this, 'loadSingleTemplate']);
 
         $this->cb_name = $this->plugin_slug . '_cbq';
+
+        add_action('wp_head', [$this, 'ajaxUrl']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueStyles'], 15);
+
+        add_filter('wp_resource_hints', [$this, 'resourceHints'], 20, 2);
+
+        add_action('wp_ajax_mpq_action', [$this, 'mpcAjaxAction']);
+        add_action('wp_ajax_nopriv_mpq_action', [$this, 'mpcAjaxAction']);
     }
 
     /**
-     * register post type mpquestions and related taxonomies
+     * Register post type mpquestions and related taxonomies
      */
     public function mpquestionsPostTypes()
     {
@@ -122,6 +140,9 @@ class mpQuestions
         register_taxonomy_for_object_type('post_tag', $this->plugin_slug);
     }
 
+    /**
+     * Register all meta fields at once
+     */
     function registerMb($meta_boxes)
     {
         $prefix = 'mpc_';
@@ -176,14 +197,124 @@ class mpQuestions
         return $meta_boxes;
     }
 
+    /**
+     * Template example 
+     */
     public function loadSingleTemplate($template)
     {
         global $post;
 
-        if ($this->plugin_slug === $post->post_type && locate_template(array('single-' . $this->plugin_slug . '.php')) !== $template) {
-            return plugin_dir_path(__FILE__) . 'single-' . $this->plugin_slug . '.php';
+        $tpl_file_single = 'single-' . $this->plugin_slug . '.php';
+
+        if ($this->plugin_slug === $post->post_type && locate_template([$tpl_file_single]) !== $template) {
+            return plugin_dir_path(__FILE__) . $tpl_file_single;
         }
 
         return $template;
+    }
+
+    /**
+     * dirty way to include missing "ajaxurl" in some cases
+     * @todo let's hope it'll not break sites
+     */
+    public function ajaxUrl()
+    {
+        echo '<script type="text/javascript">var ajaxurl = "' . admin_url('admin-ajax.php') . '";</script>';
+    }
+
+    /**
+     * Register javascript file(s)
+     */
+    public function enqueueScripts()
+    {
+
+        $mpq_js = $this->mpqdir . 'assets/js/mpq.js';
+
+        if (!is_admin()) {
+
+            wp_enqueue_script('jquery');
+            wp_register_script('mpq', $mpq_js, ['jquery', 'bootstrap'], $this->vers . '.' . $this->verspatch, true);
+            wp_enqueue_script('mpq');
+        }
+    }
+
+    /**
+     * Registed CSS style(s)
+     */
+    public function enqueueStyles()
+    {
+
+        $mpq_css = $this->mpqdir . 'assets/css/grid5x5.css';
+
+        if (!is_admin()) {
+            wp_register_style('open-iconic-bootstrap', $this->mpqdir . 'assets/css/open-iconic-bootstrap.css', [], '1.1.1', 'all');
+            wp_enqueue_style('open-iconic-bootstrap');
+            wp_register_style('grid5x5', $mpq_css, ['open-iconic-bootstrap'], $this->vers . '.' . $this->verspatch . date("dHi"), 'all');
+            wp_enqueue_style('grid5x5');
+        }
+    }
+
+    /**
+     * resource hints for fater loading
+     */
+    public function resourceHints($hints, $relation_type)
+    {
+        $rlvhv = $this->vers;
+
+        $mpq_css = $this->mpqdir . 'assets/css/grid5x5.css';
+        $openiconic_bootstrap_css = $this->mpqdir . 'assets/css/open-iconic-bootstrap.css';
+        switch ($relation_type) {
+            case 'prerender':
+                $hints[] = $mpq_css;
+                $hints[] = $openiconic_bootstrap_css;
+                break;
+            case 'prefetch':
+                $hints[] = $mpq_css;
+                $hints[] = $openiconic_bootstrap_css;
+                break;
+        }
+
+        return $hints;
+    }
+
+    /**
+     * AJAX calls to WordPress backend
+     */
+    public function mpcAjaxAction()
+    {
+        // global $wpdb; // this is how you get access to the database
+        $postid = intval($_POST['postid']);
+        $mpq_data = get_post($postid);
+        $question = get_the_title($postid);
+        $postid = $mpq_data->ID;
+
+        $prefix = 'mpc_';
+        $atbildes_y = rwmb_meta($prefix . 'atbildes_y', [], $postid);
+        $atbildes_n = rwmb_meta($prefix . 'atbildes_n', [], $postid);
+        $paskaidrojums = rwmb_meta($prefix . 'paskaidrojums', [], $postid);
+        $solis = rwmb_meta($prefix . 'solis', [], $postid);
+        $nrpk = rwmb_meta($prefix . 'nrpk', [], $postid);
+        $atbildes = array_merge((array)$atbildes_y, $atbildes_n);
+
+        echo '<strong>' . $question . '</strong>';
+
+        echo '<p>';
+        // echo 'Laukums: #' . $nrpk . ' | Punkti:<strong>' . $solis . "</strong><br />\n";
+        echo "\n";
+        echo __("Answers", 'medijpratibalv') . ':';
+        echo '</p>';
+        echo '<div data-mpqanswers="' . $nrpk . '" class="mpq_answers">';
+        echo '<script>solis=' . $solis . ';</script>';
+        $atb = 0;
+        $answ_icon = '<span class="oi oi-target"></span>';
+        foreach ($atbildes as $atbilde) {
+            ++$atb;
+            $pareiza = (($atbildes_y === $atbilde) ? 1 : 0);
+            echo '<p class="mpq_correct-' . $pareiza . ' mpq_answer rounded-lg " data-mpqcorrect="' . $pareiza . '">' . $answ_icon . ' ' . $atbilde . "</p>\n";
+        }
+        echo "\n</div>";
+        echo '<div class="mpq_description d-none bg-white text-dark p-3 mb-2 rounded-lg">' . $paskaidrojums . '</div>';
+
+        wp_die(); // this is required to terminate immediately and return a proper response
     }
 }
