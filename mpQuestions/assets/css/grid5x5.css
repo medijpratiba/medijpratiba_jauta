@@ -1,54 +1,84 @@
+.neredz {
+    display: none !important;
+}
 
-body{
-    /* background-color: #260101; */
+.text-shadow1 {
+    text-shadow: 2px 2px 5px #000;
+}
+
+html>.page-template-tpl_5x5 {
+    background      : url(../img/conor-samuel-circus-3000.jpg) no-repeat left bottom fixed;
+    background-size : cover;
+    height          : 100%;
+    background-color: #000;
+    color           : #fff;
+}
+
+/* .page-template-tpl_5x5{
+    // background-color: #260101; 
     background-color: #000;
     color: #fff;
-}
+} */
 .grid5x5-single {
-    background-color: #ac4800;
-    color           : #260101;
-    border-radius   : 5px;
+    background-color   : rgba(172, 72, 0, 0.9);
+    /* #ac4800;*/
+    /* color           : #260101; */
+    color              : #fff;
+    border-radius      : 5px;
     /* padding         : 1rem; */
-    text-align: center;
-    display: table;
+    text-align         : center;
+    display            : table;
 }
 
 .grid5x5-single:nth-child(even) {
     /* background-color: #f2af88; */
-    background-color: #6d2400;
+    background-color   : rgba(109, 36, 0, 0.9);
+    /* #6d2400; */
     /* color           : #000; */
 }
+
 .grid5x5-single:first-child {
-    background-color: rgb(53, 2, 2);
-    color           : #fff;
-}
-.grid5x5-single:last-child {
-    background-color: rgb(2, 34, 7);
-    color           : #fff;
+    background: rgb(53, 2, 2) url("../img/zhuo-cheng-you-dice-300.jpg") no-repeat bottom right;
+    color     : #fff;
+    background-size: cover;
+
 }
 
+.grid5x5-single:last-child {
+    background     : rgb(2, 34, 7) url("../img/david-boca-sparks-300.jpg") no-repeat top center;
+    background-size: cover;
+    color          : #fff;
+}
+
+/* .grid5x5-single[data-bgimg] {
+	background-image: url(attr(bgimg string));
+} */
+
 .grid5x5 {
-    width: 90%;
-    width: calc(100% - 16px);
+    width                : 90%;
+    width                : calc(100% - 16px);
     display              : grid;
     grid-gap             : 4px;
     grid-template-columns: repeat(5, 20%);
-    position: relative; /* If you want text inside of it */
+    position             : relative;
+    /* If you want text inside of it */
 
 }
 
 .grid5x5-single .grid5x5-box {
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    position: relative;
-    height: 15vh;
-    width: 10vw;
-    display: table-cell;
+    transform     : translate(-50%, -50%);
+    -moz-transform: translate(-50%, 0);
+    /* Firefox */
+    top           : 50%;
+    left          : 50%;
+    position      : relative;
+    height        : 15vh;
+    width         : 10vw;
+    display       : table-cell;
     vertical-align: middle;
 }
 
-#empModal .modal-content{
+#empModal .modal-content {
     /* background-image: url("../img/cirkus-burti-bg.jpg"); */
     /* background-color: #a63f03; */
     background-color: #260101;
@@ -56,86 +86,90 @@ body{
     /* color: #f2af88; */
     color: #fff;
 }
+
 .figurex {
-    display: inline-block;
-    /*  margin: 15px 12px;
+    display     : inline-block;
+    /*  margin  : 15px 12px;
       box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);*/
 }
 
 .figcaptionx {
     margin-top: -80px;
-    position: absolute;
-    z-index: 1;
-    bottom: 1em;
+    position  : absolute;
+    z-index   : 1;
+    bottom    : 1em;
 }
 
 .figcaptionx p {
-    margin-top: 0px;
+    margin-top   : 0px;
     margin-bottom: 0px;
-    padding-left: 0.75rem;
-    text-align: left;
-    color: #ffffff;
-    font-weight: 700;
+    padding-left : 0.75rem;
+    text-align   : left;
+    color        : #ffffff;
+    font-weight  : 700;
 }
 
 .cs-text {
-    color: #fff;
-    /*    margin-left: 1rem;*/
-    font-weight: 700;
-    letter-spacing: 1px;
+    color             : #fff;
+    /*    margin-left : 1rem;*/
+    font-weight       : 700;
+    letter-spacing    : 1px;
     /*  text-transform: uppercase;*/
 }
-.figurex img{
+
+.figurex img {
     vertical-align: initial;
-    width: 100%;
-    height: auto;
+    width         : 100%;
+    height        : auto;
 }
+
 .figcaptionx img {
-    position: relative;
+    position      : relative;
     vertical-align: initial;
-    float: right;
-    padding: 10px 35px 50px 0px;
+    float         : right;
+    padding       : 10px 35px 50px 0px;
 }
+
 .cs-item {
-    position: relative;
-    display: inline-block;
-    /* max-height: 14rem; */
-    overflow: hidden;
+    position           : relative;
+    display            : inline-block;
+    /* max-height      : 14rem; */
+    overflow           : hidden;
     /*    margin-bottom: 3rem;*/
 }
 
 .cs-item:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    content         : '';
+    position        : absolute;
+    top             : 0;
+    right           : 0;
+    bottom          : 0;
+    left            : 0;
     /*    background:linear-gradient(0deg, rgba(0, 0, 0, .9)  0,  rgba(0, 0, 0, .25 ) 36%, rgba(0, 0, 0, 0) 46%);*/
-    background: linear-gradient(0deg,rgba(0,0,0,.9) 0,rgba(0,0,0,.25) 50%,rgba(0,0,0,0) 96%)
+    background      : linear-gradient(0deg, rgba(0, 0, 0, .9) 0, rgba(0, 0, 0, .25) 50%, rgba(0, 0, 0, 0) 96%)
 }
 
 
 .cs-item {
-    position: relative;
-    display: inline-block;
-    /* max-height: 14rem; */
-    overflow: hidden;
+    position           : relative;
+    display            : inline-block;
+    /* max-height      : 14rem; */
+    overflow           : hidden;
     /*    margin-bottom: 3rem;*/
 }
 
 .cs-item:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    content         : '';
+    position        : absolute;
+    top             : 0;
+    right           : 0;
+    bottom          : 0;
+    left            : 0;
     /*    background:linear-gradient(0deg, rgba(0, 0, 0, .9)  0,  rgba(0, 0, 0, .25 ) 36%, rgba(0, 0, 0, 0) 46%);*/
-    background: linear-gradient(0deg,rgba(0,0,0,.9) 0,rgba(0,0,0,.25) 50%,rgba(0,0,0,0) 96%)
+    background      : linear-gradient(0deg, rgba(0, 0, 0, .9) 0, rgba(0, 0, 0, .25) 50%, rgba(0, 0, 0, 0) 96%)
 }
 
 #dice {
-    font-size: 9rem;
+    /* font-size: 9rem; */
     line-height: 0.5rem;
 }

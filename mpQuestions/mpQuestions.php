@@ -2,7 +2,7 @@
 
 /** 
  * Plugin Name: Medijpratiba.lv jautājumi
- * Version: 1.0.5
+ * Version: 1.0.6.0
  * Plugin URI: https://mediabox.lv/wordpress/
  * Description: Medijpratiba.lv spēles jautājumi
  * Author: Rolands Umbrovskis
@@ -30,7 +30,7 @@ try {
 class mpQuestions
 {
 
-    var $vers = '1.0.5';
+    var $vers = '1.0.7.0';
     var $verspatch;
     var $plugin_slug;
     var $label_singular;
@@ -228,10 +228,9 @@ class mpQuestions
     public function enqueueScripts()
     {
 
-        $mpq_js = $this->mpqdir . 'assets/js/mpq.js';
+        $mpq_js = $this->mpqdir . 'assets/js/mpq-'.$this->vers.'.js';
 
         if (!is_admin()) {
-
             wp_enqueue_script('jquery');
             wp_register_script('mpq', $mpq_js, ['jquery', 'bootstrap'], $this->vers . '.' . $this->verspatch, true);
             wp_enqueue_script('mpq');
@@ -249,7 +248,11 @@ class mpQuestions
         if (!is_admin()) {
             wp_register_style('open-iconic-bootstrap', $this->mpqdir . 'assets/css/open-iconic-bootstrap.css', [], '1.1.1', 'all');
             wp_enqueue_style('open-iconic-bootstrap');
-            wp_register_style('grid5x5', $mpq_css, ['open-iconic-bootstrap'], $this->vers . '.' . $this->verspatch . date("dHi"), 'all');
+
+            wp_register_style('firework', $this->mpqdir . 'assets/css/firework.css', [], '1.1.1', 'all');
+            wp_enqueue_style('firework');
+
+            wp_register_style('grid5x5', $mpq_css, ['open-iconic-bootstrap','firework'], $this->vers . '.' . $this->verspatch . date("dHi"), 'all');
             wp_enqueue_style('grid5x5');
         }
     }
@@ -282,39 +285,41 @@ class mpQuestions
      */
     public function mpcAjaxAction()
     {
-        // global $wpdb; // this is how you get access to the database
-        $postid = intval($_POST['postid']);
-        $mpq_data = get_post($postid);
-        $question = get_the_title($postid);
-        $postid = $mpq_data->ID;
-
-        $prefix = 'mpc_';
-        $atbildes_y = rwmb_meta($prefix . 'atbildes_y', [], $postid);
-        $atbildes_n = rwmb_meta($prefix . 'atbildes_n', [], $postid);
-        $paskaidrojums = rwmb_meta($prefix . 'paskaidrojums', [], $postid);
-        $solis = rwmb_meta($prefix . 'solis', [], $postid);
-        $nrpk = rwmb_meta($prefix . 'nrpk', [], $postid);
-        $atbildes = array_merge((array)$atbildes_y, $atbildes_n);
-
-        echo '<strong>' . $question . '</strong>';
-
-        echo '<p>';
-        // echo 'Laukums: #' . $nrpk . ' | Punkti:<strong>' . $solis . "</strong><br />\n";
-        echo "\n";
-        echo __("Answers", 'medijpratibalv') . ':';
-        echo '</p>';
-        echo '<div data-mpqanswers="' . $nrpk . '" class="mpq_answers">';
-        echo '<script>solis=' . $solis . ';</script>';
-        $atb = 0;
-        $answ_icon = '<span class="oi oi-target"></span>';
-        foreach ($atbildes as $atbilde) {
-            ++$atb;
-            $pareiza = (($atbildes_y === $atbilde) ? 1 : 0);
-            echo '<p class="mpq_correct-' . $pareiza . ' mpq_answer rounded-lg " data-mpqcorrect="' . $pareiza . '">' . $answ_icon . ' ' . $atbilde . "</p>\n";
+        // Did we ask for data?
+        if (!empty($_POST['postid'])){
+            // global $wpdb; // this is how you get access to the database
+            $postid = intval($_POST['postid']);
+            $mpq_data = get_post($postid);
+            $question = get_the_title($postid);
+            $postid = $mpq_data->ID;
+    
+            $prefix = 'mpc_';
+            $atbildes_y = rwmb_meta($prefix . 'atbildes_y', [], $postid);
+            $atbildes_n = rwmb_meta($prefix . 'atbildes_n', [], $postid);
+            $paskaidrojums = rwmb_meta($prefix . 'paskaidrojums', [], $postid);
+            $solis = rwmb_meta($prefix . 'solis', [], $postid);
+            $nrpk = rwmb_meta($prefix . 'nrpk', [], $postid);
+    
+            $atbildes = array_merge((array)$atbildes_y, $atbildes_n) ; // Merge all answers in one array
+            shuffle($atbildes); // Otherwise the correct answer always is first. Now random.
+    
+            echo '<p><strong>' . $question . '</strong></p>';
+    
+            echo '<p>'.__("Answers", 'medijpratibalv') . ':</p>';
+    
+            echo '<div data-mpqanswers="' . $nrpk . '" class="mpq_answers">';
+            echo '<script>solis=' . $solis . ';</script>';
+            $atb = 0;
+            $answ_icon = '<span class="oi oi-target"></span>';
+            foreach ($atbildes as $atbilde) {
+                ++$atb;
+                $pareiza = (($atbildes_y === $atbilde) ? 1 : 0);
+                echo '<p class="mpq_correct-' . $pareiza . ' mpq_answer rounded-lg " data-mpqcorrect="' . $pareiza . '">' . $answ_icon . ' ' . $atbilde . "</p>\n";
+            }
+            echo "\n</div>";
+            echo '<div class="mpq_description d-none bg-white text-dark p-3 mb-2 rounded-lg">' . $paskaidrojums . '</div>';
         }
-        echo "\n</div>";
-        echo '<div class="mpq_description d-none bg-white text-dark p-3 mb-2 rounded-lg">' . $paskaidrojums . '</div>';
 
-        wp_die(); // this is required to terminate immediately and return a proper response
+        wp_die(); 
     }
 }
