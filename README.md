@@ -4,7 +4,7 @@ Lai lietotu **[Medijpratiba.lv spēles WordPress spraudni](https://github.com/me
 
 - jau esoša WordPress mājas lapa;
 - iespēja ielādēt saturu mājas lapā. Ieteicams lietot standarta "[WordPress Importer](https://wordpress.org/plugins/wordpress-importer/)" (vai skatīt mapi "[wordpress-importer](wordpress-importer)");
-- ielādēt papildus spraudni "[Meta Box – WordPress Custom Fields Framework](https://wordpress.org/plugins/meta-box/)" (vai skatīt mapi "[meta-box](meta-box)"). "[Advanced Custom Fields (ACF)](https://wordpress.org/plugins/advanced-custom-fields/)" atbalsts var tikt pievienots nākotnē;
+- ielādēt papildus spraudni "[Meta Box – WordPress Custom Fields Framework](https://wordpress.org/plugins/meta-box/)" (vai skatīt mapi "[meta-box](meta-box)"). "[Advanced Custom Fields (ACF)](https://wordpress.org/plugins/advanced-custom-fields/)" atbalsts var tikt pievienots nākotnē.
 
 ## Pielāgotie laukumi
 
